@@ -1,0 +1,358 @@
+const fs = require('fs');
+const path = require('path');
+
+const DB_PATH = path.join(__dirname, '..', 'data', 'db.json');
+
+const INITIAL_DATA = {
+  settings: {
+    geminiApiKey: process.env.GEMINI_API_KEY || '',
+    model: 'gemini-1.5-flash',
+    useMockFallback: true,
+    companyName: 'Nexis Enterprise Technologies',
+    systemLanguage: 'en-gu'
+  },
+  ideas: [
+    {
+      id: 'idea-101',
+      title: 'Automated AI Compliance & SOC2 Evidence Harvester',
+      author: 'Priya Sharma',
+      role: 'DevOps & Security Lead',
+      department: 'Security & Infrastructure',
+      submittedAt: '2026-11-18T10:30:00.000Z',
+      problem: 'Audit preparation takes 120+ engineering hours every quarter. Developers spend weeks in meetings manually collecting logs, screenshotting AWS configs, and filing evidence tickets.',
+      proposedSolution: 'Build an automated LLM background auditor that periodically pulls AWS CloudTrail, GitHub branch protection rules, and Jira tickets, matches them against SOC2 controls, and produces real-time compliance docs.',
+      targetAudience: 'Security team, Auditors, VP of Engineering',
+      expectedImpact: 'Save 450+ developer hours annually, reduce audit prep meetings by 90%, eliminate human error in compliance evidence.',
+      status: 'approved',
+      convertedToProjectId: 'proj-01',
+      aiEvaluation: {
+        feasibilityScore: 94,
+        businessValueScore: 96,
+        riskLevel: 'Low',
+        executiveSummary: 'High-leverage infrastructure automation. Solves a direct developer productivity drain with low execution risk. Clear API integration pathways with AWS and GitHub.',
+        swotAnalysis: {
+          strengths: ['Standardized SOC2 controls', 'High ROI on developer time'],
+          weaknesses: ['Requires read-only AWS IAM security permissions'],
+          opportunities: ['Can be productized as internal SaaS for partner teams'],
+          threats: ['Potential API rate limits on cloud providers']
+        },
+        estimatedMeetingsSavedQuarterly: 42
+      }
+    },
+    {
+      id: 'idea-102',
+      title: 'Context-Aware Customer Support Co-Pilot with Knowledge Graph',
+      author: 'Aarav Patel',
+      role: 'Senior Backend Engineer',
+      department: 'Customer Experience',
+      submittedAt: '2026-11-20T14:15:00.000Z',
+      problem: 'Tier-1 customer support agents take 18 minutes average to resolve tickets due to fragmented documentation across Notion, Zendesk, and Slack. Cross-team sync meetings happen daily.',
+      proposedSolution: 'RAG-powered conversational assistant that indexes product documentation, release notes, and resolved tickets to auto-draft 90% of ticket answers with citations.',
+      targetAudience: 'Customer Support Specialists, Product Operations',
+      expectedImpact: 'Drop average first-response time from 18 min to 2 min. Eliminate daily tier-escalation standups.',
+      status: 'approved',
+      convertedToProjectId: 'proj-02',
+      aiEvaluation: {
+        feasibilityScore: 91,
+        businessValueScore: 92,
+        riskLevel: 'Low-Medium',
+        executiveSummary: 'Proven architecture pattern (RAG + vector embeddings). Immediate impact on customer satisfaction (CSAT) and substantial reduction in cross-departmental alignment meetings.',
+        swotAnalysis: {
+          strengths: ['Immediate customer-facing ROI', 'Rich existing ticket history'],
+          weaknesses: ['Hallucination risk on edge billing queries'],
+          opportunities: ['Can handle multi-lingual customer tickets autonomously'],
+          threats: ['Data freshness latency if doc indexing lags']
+        },
+        estimatedMeetingsSavedQuarterly: 65
+      }
+    },
+    {
+      id: 'idea-103',
+      title: 'Autonomous Code Review & Security Vulnerability Gatekeeper',
+      author: 'Vikram Mehta',
+      role: 'Staff Software Architect',
+      department: 'Core Engineering',
+      submittedAt: '2026-11-22T09:00:00.000Z',
+      problem: 'PR review bottlenecks cause releases to slip by 3-5 days. Senior engineers spend 15 hours a week in PR walkthroughs and sync calls discussing style, missing tests, and OWASP edge cases.',
+      proposedSolution: 'A GitHub Action LLM agent that performs pre-merge automated security scans, tests coverage verification, generates unit test drafts, and points out memory leaks before human review.',
+      targetAudience: 'All Software Engineers, QA Leads',
+      expectedImpact: 'Accelerate release velocity by 40%. Eliminate PR sync meetings entirely.',
+      status: 'pending_review',
+      convertedToProjectId: null,
+      aiEvaluation: {
+        feasibilityScore: 95,
+        businessValueScore: 98,
+        riskLevel: 'Low',
+        executiveSummary: 'Exceptional developer productivity initiative. Directly resolves engineering velocity drag. Can be tested on non-critical repos within 2 weeks.',
+        swotAnalysis: {
+          strengths: ['Plug-and-play GitHub CI integration', 'Massive time recovery for senior staff'],
+          weaknesses: ['Needs careful false-positive calibration to avoid alert fatigue'],
+          opportunities: ['Integrate automated unit test generation'],
+          threats: ['GitHub API rate limiting on high-volume monorepos']
+        },
+        estimatedMeetingsSavedQuarterly: 80
+      }
+    }
+  ],
+  projects: [
+    {
+      id: 'proj-01',
+      codeName: 'PROJECT ATLAS',
+      ideaId: 'idea-101',
+      title: 'Automated AI Compliance & SOC2 Evidence Harvester',
+      department: 'Security & Infrastructure',
+      status: 'active',
+      progressPct: 65,
+      createdAt: '2026-11-19T10:00:00.000Z',
+      targetCompletionDate: '2026-12-20',
+      meetingsSavedHours: 38,
+      team: [
+        { role: 'Backend Lead', name: 'Aarav Patel', tasksCompleted: 4, tasksTotal: 5 },
+        { role: 'DevOps / Cloud', name: 'Priya Sharma', tasksCompleted: 3, tasksTotal: 4 },
+        { role: 'Frontend Engineer', name: 'Neha Joshi', tasksCompleted: 2, tasksTotal: 3 },
+        { role: 'QA & Compliance', name: 'Rohan Shah', tasksCompleted: 1, tasksTotal: 2 }
+      ],
+      prdMarkdown: `# Product Requirements Document (PRD)
+## Project Atlas: Automated SOC2 Evidence Harvester
+
+### 1. Executive Summary
+Project Atlas is an autonomous compliance data pipeline that eliminates manual audit preparation meetings. It programmatically polls cloud infrastructure configurations, security policies, and commit logs, mapping them directly to AICPA Trust Services Criteria.
+
+### 2. Objectives & Success Metrics
+- **Zero-Meeting Audit Evidence Collection**: 95% of SOC2 evidence gathered autonomously without scheduling sync sessions.
+- **Continuous Compliance Score**: Real-time dashboard showing compliance posture 24/7.
+- **Audit Velocity**: Shrink audit response turnaround from 14 business days to under 4 hours.
+
+### 3. User Personas & Workflows
+- **DevOps Engineer**: Configures cloud read-only roles once. Receives zero manual screenshot requests.
+- **Security Auditor**: Accesses pre-compiled, cryptographically hashed evidence packets.
+- **VP of Engineering**: Inspects live compliance speedometer without scheduling executive status meetings.
+
+### 4. Functional Specifications
+1. **Automated Evidence Ingestors**: AWS IAM, KMS, S3 bucket encryption, GitHub branch protections.
+2. **LLM Evidence Normalizer**: Translates raw JSON configs into plain-English audit justifications.
+3. **Automated Alerting**: Flags non-compliant drift within 15 minutes of occurrence.
+`,
+      techSpecsMarkdown: `# Technical Architecture & Specifications
+## Architecture Overview
+- **Core Engine**: Node.js microservice running on AWS Lambda / ECS.
+- **State Store**: PostgreSQL with immutable audit event logging.
+- **LLM Reasoning**: Gemini API / Structured Output parsing for compliance control cross-referencing.
+- **Data Integrations**: AWS SDK v3 (CloudTrail, IAM, Config), GitHub Octokit REST API.
+
+## System Sequence Flow
+\`\`\`
+[Cloud Provider Event] -> [Webhook/Cron Ingest] -> [Konvo Normalizer]
+      -> [LLM Verification Engine] -> [Audit Evidence Vault]
+\`\`\`
+
+## Security & Secrets Management
+- Zero write access: IAM role constrained to 'SecurityAudit' policy.
+- All stored evidence signed using KMS asymmetric key pair.
+`,
+      roadmap: [
+        { milestone: 'M1: Cloud Evidence Connectors', timeline: 'Week 1-2', status: 'completed', deliverables: 'AWS CloudTrail & IAM policy collector active' },
+        { milestone: 'M2: LLM Control Mapper & Validator', timeline: 'Week 3', status: 'in_progress', deliverables: 'Automated evidence generation against SOC2 CC6.1 - CC6.8' },
+        { milestone: 'M3: Auditor Export Portal & Zero-Meeting UI', timeline: 'Week 4', status: 'pending', deliverables: 'One-click audit bundle download & real-time drift alerts' }
+      ]
+    },
+    {
+      id: 'proj-02',
+      codeName: 'PROJECT HELIOS',
+      ideaId: 'idea-102',
+      title: 'Context-Aware Customer Support Co-Pilot with Knowledge Graph',
+      department: 'Customer Experience',
+      status: 'active',
+      progressPct: 40,
+      createdAt: '2026-11-21T08:30:00.000Z',
+      targetCompletionDate: '2027-01-10',
+      meetingsSavedHours: 24,
+      team: [
+        { role: 'AI / ML Engineer', name: 'Vikram Mehta', tasksCompleted: 2, tasksTotal: 4 },
+        { role: 'Backend Engineer', name: 'Kavita Dave', tasksCompleted: 1, tasksTotal: 3 },
+        { role: 'Frontend Engineer', name: 'Neha Joshi', tasksCompleted: 1, tasksTotal: 3 }
+      ],
+      prdMarkdown: `# Product Requirements Document (PRD)
+## Project Helios: Context-Aware Customer Support Co-Pilot
+
+### 1. Executive Summary
+Project Helios automates customer issue diagnosis and response drafting. It uses a vector knowledge base coupled with Gemini LLM to interpret complex support inquiries, reducing resolution delays and eliminating cross-team triage sync meetings.
+
+### 2. Target Objectives
+- First-contact resolution rate improvement by 45%.
+- Reduction of internal support clarification meetings from 5 hrs/week to 0.
+`,
+      techSpecsMarkdown: `# Technical Architecture: Project Helios
+- **Embedding Model**: Text Embeddings Geck / Gemini Embedding API
+- **Vector Database**: Qdrant / Pinecone
+- **Agent Orchestrator**: LangChain / Direct REST Pipeline
+`,
+      roadmap: [
+        { milestone: 'M1: Knowledge Base Ingestion Pipeline', timeline: 'Week 1', status: 'completed', deliverables: 'Notion, Zendesk, and Release docs indexed' },
+        { milestone: 'M2: Contextual Co-Pilot Chrome Extension', timeline: 'Week 2-3', status: 'in_progress', deliverables: 'Real-time response suggestions in Zendesk ticket view' },
+        { milestone: 'M3: Autonomous Ticket Resolution for Tier-1', timeline: 'Week 4-5', status: 'pending', deliverables: 'Auto-pilot for password resets, invoice queries, and status checks' }
+      ]
+    }
+  ],
+  tasks: [
+    {
+      id: 'task-1',
+      projectId: 'proj-01',
+      title: 'Implement AWS IAM Role & Policy Evidence Scraper',
+      role: 'DevOps / Cloud',
+      assignee: 'Priya Sharma',
+      status: 'done',
+      priority: 'high',
+      description: 'Write an automated script using AWS SDK to query IAM role policies, MFA enforcement status, and root account activity.',
+      instructions: '1. Create IAM client with ReadOnlyAccess.\n2. Query ListRoles, GetAccountSummary, and GenerateCredentialReport.\n3. Save normalized JSON payload to S3 evidence bucket.',
+      acceptanceCriteria: 'Generates valid JSON containing password policy compliance and active MFA ratio with zero manual intervention.',
+      blockers: null,
+      aiGuidance: 'Use AWS STS assumeRole with external ID for cross-account audits to maintain enterprise isolation.'
+    },
+    {
+      id: 'task-2',
+      projectId: 'proj-01',
+      title: 'Build LLM Control Cross-Referencer & Auto-Drafting Engine',
+      role: 'Backend Lead',
+      assignee: 'Aarav Patel',
+      status: 'in_progress',
+      priority: 'high',
+      description: 'Feed raw AWS JSON data into LLM prompt to map directly into SOC2 CC6.1 Logical Access Controls and draft auditor commentary.',
+      instructions: '1. Construct prompt containing SOC2 control definitions.\n2. Pass CloudTrail & IAM JSON snippets.\n3. Return structured schema with status (Compliant/Deficient) and justification.',
+      acceptanceCriteria: 'LLM outputs structured JSON without hallucinating control numbers. Processing latency < 3 seconds.',
+      blockers: null,
+      aiGuidance: 'Employ structured JSON output formatting or Gemini schema mode to ensure deterministic response parsing.'
+    },
+    {
+      id: 'task-3',
+      projectId: 'proj-01',
+      title: 'Design Autonomous Compliance Speedometer Dashboard',
+      role: 'Frontend Engineer',
+      assignee: 'Neha Joshi',
+      status: 'in_progress',
+      priority: 'medium',
+      description: 'Build an intuitive executive dashboard displaying live compliance score, drift alerts, and one-click evidence downloads.',
+      instructions: '1. Build responsive gauges showing SOC2 category percentages.\n2. Add evidence preview modal with syntax-highlighted JSON & auditor note.\n3. Enable instant PDF/ZIP export.',
+      acceptanceCriteria: 'Loads in under 1 second. Clean mobile and desktop responsive layout.',
+      blockers: null,
+      aiGuidance: 'Use Tailwind CSS with accessible color contrasts (green for passing controls, amber for review, red for drift).'
+    },
+    {
+      id: 'task-4',
+      projectId: 'proj-01',
+      title: 'Automated CI/CD Pipeline for Continuous Compliance Regressions',
+      role: 'DevOps / Cloud',
+      assignee: 'Priya Sharma',
+      status: 'todo',
+      priority: 'medium',
+      description: 'Configure GitHub Actions workflow to run the evidence scraper every midnight and commit status badges to README.',
+      instructions: '1. Define cron job in .github/workflows/compliance.yml.\n2. Securely inject AWS role credentials.\n3. Post Webhook summary to Konvo feed.',
+      acceptanceCriteria: 'Runs automatically on schedule; sends failure alerts without human monitoring.',
+      blockers: null,
+      aiGuidance: 'Ensure GitHub Action uses OIDC (OpenID Connect) token authentication rather than long-lived AWS Access Keys.'
+    },
+    {
+      id: 'task-5',
+      projectId: 'proj-02',
+      title: 'Build Vector Embedding Ingestion Pipeline for Zendesk Tickets',
+      role: 'AI / ML Engineer',
+      assignee: 'Vikram Mehta',
+      status: 'done',
+      priority: 'high',
+      description: 'Export last 10,000 resolved tickets, sanitize PII, generate embeddings, and load into vector store.',
+      instructions: '1. Strip emails, credit cards, and names via regex.\n2. Chunk solutions into 500-token blocks.\n3. Store in vector database with category metadata.',
+      acceptanceCriteria: 'Semantic search returns relevant historical tickets with similarity score > 0.85.',
+      blockers: null,
+      aiGuidance: 'Cosine distance on text embeddings performs best when question and answer are embedded together as a paired document.'
+    },
+    {
+      id: 'task-6',
+      projectId: 'proj-02',
+      title: 'Implement Support Co-Pilot Real-time Inference API',
+      role: 'Backend Engineer',
+      assignee: 'Kavita Dave',
+      status: 'in_progress',
+      priority: 'high',
+      description: 'Create an endpoint /api/copilot/suggest that accepts an incoming user ticket, performs vector search, and calls Gemini to draft a solution.',
+      instructions: '1. Query vector database for top 3 matching resolutions.\n2. Inject into prompt with company tone guidelines.\n3. Return proposed response with confidence rating.',
+      acceptanceCriteria: 'API response time < 1.8 seconds; include source document citations.',
+      blockers: null,
+      aiGuidance: 'Add a guardrail check that flags billing/refund disputes for human supervisor sign-off.'
+    }
+  ],
+  standups: [
+    {
+      id: 'std-1',
+      projectId: 'proj-01',
+      employeeName: 'Priya Sharma',
+      role: 'DevOps / Cloud',
+      timestamp: '2026-11-22T09:15:00.000Z',
+      completedWork: 'Finalized AWS IAM and CloudTrail scrapers. Confirmed zero permissions leak.',
+      currentFocus: 'Setting up midnight GitHub Actions cron with AWS OIDC authentication.',
+      blockers: 'None. Everything is documented in the auto-generated tech spec.',
+      aiStandupSummary: 'Priya successfully completed Task #1 ahead of schedule. Task #4 unblocked. No executive intervention required.'
+    },
+    {
+      id: 'std-2',
+      projectId: 'proj-01',
+      employeeName: 'Aarav Patel',
+      role: 'Backend Lead',
+      timestamp: '2026-11-22T09:30:00.000Z',
+      completedWork: 'Built Gemini structured prompt for SOC2 CC6.1 controls mapping.',
+      currentFocus: 'Calibrating JSON output parsing and caching evidence hashes.',
+      blockers: 'None.',
+      aiStandupSummary: 'Aarav is 80% through the LLM cross-referencing engine. Project Atlas tracking on schedule for Week 3 release.'
+    }
+  ],
+  chatHistory: [
+    {
+      id: 'chat-1',
+      projectId: 'proj-01',
+      role: 'Frontend Engineer',
+      employeeName: 'Neha Joshi',
+      sender: 'user',
+      text: 'Konvo AI, can you clarify what data fields I need to display in the evidence preview modal?',
+      timestamp: '2026-11-22T10:10:00.000Z'
+    },
+    {
+      id: 'chat-2',
+      projectId: 'proj-01',
+      role: 'Frontend Engineer',
+      employeeName: 'Neha Joshi',
+      sender: 'assistant',
+      text: 'According to Section 4.2 of the generated Tech Specs, the evidence modal requires:\n1. **Control ID & Title** (e.g. "CC6.1 - Logical Access Controls")\n2. **Compliance Status Badge** ("COMPLIANT" in emerald green, "DRIFT DETECTED" in crimson)\n3. **Cryptographic SHA-256 Hash** of the evidence snapshot\n4. **Raw JSON viewer** with syntax formatting\n5. **AI Justification Summary** (explainable audit trail)\n\nYou do NOT need to wait for a backend sync meeting—the mock response schema is ready at `/api/projects/proj-01/evidence-sample`.',
+      timestamp: '2026-11-22T10:10:05.000Z'
+    }
+  ]
+};
+
+function ensureDb() {
+  const dir = path.dirname(DB_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  if (!fs.existsSync(DB_PATH)) {
+    fs.writeFileSync(DB_PATH, JSON.stringify(INITIAL_DATA, null, 2), 'utf8');
+  }
+}
+
+function readDb() {
+  ensureDb();
+  try {
+    const raw = fs.readFileSync(DB_PATH, 'utf8');
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Error reading DB, resetting to initial data:', err);
+    return INITIAL_DATA;
+  }
+}
+
+function writeDb(data) {
+  ensureDb();
+  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf8');
+}
+
+module.exports = {
+  readDb,
+  writeDb
+};

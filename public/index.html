@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KONVO | Autonomous AI Enterprise Project Orchestrator</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Marked for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#6366f1',
+              800: '#4f46e5',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#0b0f19] text-gray-100 flex flex-col min-h-screen">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-gray-800 bg-[#0d1322]/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Tagline -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i data-lucide="bot" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">KONVO</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-400 font-medium">Enterprise Orchestrator</span>
+          </div>
+          <p class="text-[11px] text-gray-400 font-normal hidden sm:block">Meetingless Autonomous Project Delivery Platform</p>
+        </div>
+      </div>
+
+      <!-- Center Status Pill -->
+      <div class="hidden md:flex items-center space-x-2 bg-gray-900/80 border border-gray-800 px-3 py-1.5 rounded-full text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+        <span class="text-gray-300 font-medium">Autonomous Engine:</span>
+        <span class="text-emerald-400 font-semibold" id="ai-engine-status">Active (Built-in + Gemini)</span>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openModal('modal-idea-new')" class="bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-lg flex items-center space-x-2 shadow-lg shadow-cyan-500/20 transition">
+          <i data-lucide="lightbulb" class="w-4 h-4"></i>
+          <span>Upload Idea</span>
+        </button>
+
+        <button onclick="openModal('modal-checkin')" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 text-xs sm:text-sm px-3 py-2 rounded-lg flex items-center space-x-1.5 transition">
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+          <span class="hidden sm:inline">Async Check-in</span>
+        </button>
+
+        <button onclick="openModal('modal-settings')" class="p-2 rounded-lg bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white transition" title="Settings & API Key">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- METRICS / KPI HERO BANNER -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 w-full">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      
+      <!-- Metric 1: Ideas Processed -->
+      <div class="glass-panel p-4 flex items-center justify-between border-l-4 border-l-cyan-500">
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Employee Ideas</p>
+          <div class="flex items-baseline space-x-2 mt-1">
+            <span class="text-2xl font-bold text-white" id="metric-ideas">3</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-cyan-900/50 text-cyan-300 font-medium" id="metric-pending-ideas">1 Pending</span>
+          </div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 2: Active Projects -->
+      <div class="glass-panel p-4 flex items-center justify-between border-l-4 border-l-indigo-500">
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Approved Projects</p>
+          <div class="flex items-baseline space-x-2 mt-1">
+            <span class="text-2xl font-bold text-white" id="metric-projects">2</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-indigo-900/50 text-indigo-300 font-medium">Autonomous</span>
+          </div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+          <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 3: Meetings Saved -->
+      <div class="glass-panel p-4 flex items-center justify-between border-l-4 border-l-emerald-500">
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Meetings Eliminated</p>
+          <div class="flex items-baseline space-x-2 mt-1">
+            <span class="text-2xl font-bold text-emerald-400" id="metric-hours-saved">62</span>
+            <span class="text-xs text-gray-400">Engineering Hrs</span>
+          </div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 4: Autonomous Velocity -->
+      <div class="glass-panel p-4 flex items-center justify-between border-l-4 border-l-purple-500">
+        <div>
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Autonomous Velocity</p>
+          <div class="flex items-baseline space-x-2 mt-1">
+            <span class="text-2xl font-bold text-purple-400">94.8%</span>
+            <span class="text-xs text-gray-400">Zero-Sync Drift</span>
+          </div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+          <i data-lucide="zap" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full border-b border-gray-800">
+    <div class="flex space-x-1 sm:space-x-3 overflow-x-auto pb-px">
+      
+      <button onclick="switchTab('ideas')" id="tab-btn-ideas" class="tab-btn active px-3.5 py-3 text-xs sm:text-sm font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="lightbulb" class="w-4 h-4"></i>
+        <span>1. Ideas & AI Ingestion</span>
+        <span class="text-[10px] bg-cyan-950 text-cyan-400 px-1.5 py-0.5 rounded-full" id="badge-tab-ideas">3</span>
+      </button>
+
+      <button onclick="switchTab('executive')" id="tab-btn-executive" class="tab-btn px-3.5 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="shield-check" class="w-4 h-4"></i>
+        <span>2. Executive Approval Suite</span>
+        <span class="text-[10px] bg-amber-950 text-amber-400 px-1.5 py-0.5 rounded-full" id="badge-tab-pending">1</span>
+      </button>
+
+      <button onclick="switchTab('projects')" id="tab-btn-projects" class="tab-btn px-3.5 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="file-text" class="w-4 h-4"></i>
+        <span>3. Autonomous PRDs & Specs</span>
+      </button>
+
+      <button onclick="switchTab('workstreams')" id="tab-btn-workstreams" class="tab-btn px-3.5 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="user-check" class="w-4 h-4"></i>
+        <span>4. Role Workstreams (What To Do)</span>
+      </button>
+
+      <button onclick="switchTab('tracker')" id="tab-btn-tracker" class="tab-btn px-3.5 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="activity" class="w-4 h-4"></i>
+        <span>5. Project Tracking & Burndown</span>
+      </button>
+
+      <button onclick="switchTab('chat')" id="tab-btn-chat" class="tab-btn px-3.5 py-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center space-x-2 whitespace-nowrap transition">
+        <i data-lucide="messages-square" class="w-4 h-4"></i>
+        <span>6. Konvo AI Channel</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- MAIN TAB CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: IDEA INGESTION & PRE-ASSESSMENT -->
+    <!-- ================================================================= -->
+    <section id="tab-ideas" class="tab-content space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-900/60 p-5 rounded-xl border border-gray-800">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+            <span>💡 Employee Idea Ingestion & Autonomous AI Assessment</span>
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">
+            Employees upload problem statements and proposed solutions. Konvo AI instantly performs feasibility, SWOT, and meeting-reduction analysis.
+          </p>
+        </div>
+        <button onclick="openModal('modal-idea-new')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center space-x-2 transition self-start sm:self-auto">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Submit New Idea</span>
+        </button>
+      </div>
+
+      <!-- Ideas Grid -->
+      <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered by app.js -->
+        <div class="text-center py-12 text-gray-500 col-span-full">Loading submitted ideas...</div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: EXECUTIVE APPROVAL SUITE -->
+    <!-- ================================================================= -->
+    <section id="tab-executive" class="tab-content hidden space-y-6">
+      
+      <div class="bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-gray-900 p-5 rounded-xl border border-indigo-900/60">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-indigo-400"></i>
+              <span>Executive Body Approval Center</span>
+            </h2>
+            <p class="text-xs text-gray-300 mt-1">
+              Review employee proposals with AI-evaluated Feasibility & ROI. <strong>1-Click Approval</strong> instructs the AI Orchestrator to autonomously draft PRDs, Technical Architecture, and generate role-based tasks.
+            </p>
+          </div>
+          <span class="text-xs px-3 py-1 bg-indigo-900/80 border border-indigo-700 text-indigo-300 rounded-full font-medium self-start sm:self-auto">
+            Zero-Meeting Decision Protocol
+          </span>
+        </div>
+      </div>
+
+      <!-- Pending Approval Inbox -->
+      <div id="executive-inbox" class="space-y-4">
+        <!-- Rendered by app.js -->
+        <div class="text-center py-12 text-gray-500">Checking pending ideas...</div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: AUTONOMOUS PRDS & TECHNICAL SPECS -->
+    <!-- ================================================================= -->
+    <section id="tab-projects" class="tab-content hidden space-y-6">
+      
+      <!-- Project Selector & Quick Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/70 p-4 rounded-xl border border-gray-800">
+        <div class="flex items-center space-x-3">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Project:</label>
+          <select id="doc-project-select" onchange="loadProjectDocs(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-xs sm:text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-cyan-500">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="copyProjectDoc('prd')" class="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 px-3 py-1.5 rounded-lg text-gray-300 flex items-center space-x-1.5 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copy PRD</span>
+          </button>
+          <button onclick="copyProjectDoc('tech')" class="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 px-3 py-1.5 rounded-lg text-gray-300 flex items-center space-x-1.5 transition">
+            <i data-lucide="code" class="w-3.5 h-3.5"></i>
+            <span>Copy Tech Specs</span>
+          </button>
+          <button onclick="triggerExecutiveBriefModal()" class="text-xs bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold px-3 py-1.5 rounded-lg flex items-center space-x-1.5 shadow transition">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+            <span>30-Sec CEO Status Brief</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Docs Tabs: PRD vs Tech Specs vs Roadmap -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left 2 Cols: Document Viewer -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="flex space-x-2 border-b border-gray-800 pb-2">
+            <button onclick="showDocSubTab('prd')" id="doc-tab-prd-btn" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800">
+              📄 Automated PRD (Product Requirements)
+            </button>
+            <button onclick="showDocSubTab('tech')" id="doc-tab-tech-btn" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-gray-900 text-gray-400 hover:text-gray-200 border border-gray-800">
+              🛠 Technical Architecture & Specs
+            </button>
+          </div>
+
+          <div class="glass-panel p-6 max-h-[650px] overflow-y-auto">
+            <div id="doc-content-prd" class="markdown-body">
+              <!-- PRD content populated by app.js -->
+            </div>
+            <div id="doc-content-tech" class="markdown-body hidden">
+              <!-- Tech specs content populated by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 1 Col: Milestone Roadmap & Team Execution Structure -->
+        <div class="space-y-4">
+          <div class="glass-panel p-5">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2 mb-3">
+              <i data-lucide="milestone" class="w-4 h-4 text-cyan-400"></i>
+              <span>Milestone Roadmap</span>
+            </h3>
+            <div id="doc-roadmap-list" class="space-y-3">
+              <!-- Roadmaps populated dynamically -->
+            </div>
+          </div>
+
+          <div class="glass-panel p-5">
+            <h3 class="text-sm font-bold text-white flex items-center space-x-2 mb-3">
+              <i data-lucide="users" class="w-4 h-4 text-indigo-400"></i>
+              <span>Autonomous Team Roster</span>
+            </h3>
+            <div id="doc-team-list" class="space-y-2.5">
+              <!-- Team populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: ROLE WORKSTREAMS ("Tamare su karvanu che") -->
+    <!-- ================================================================= -->
+    <section id="tab-workstreams" class="tab-content hidden space-y-6">
+      
+      <!-- Role Filter Header -->
+      <div class="bg-gray-900/80 p-5 rounded-xl border border-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+            <i data-lucide="target" class="w-5 h-5 text-cyan-400"></i>
+            <span>Role-Specific Execution Guide ("Tamare Su Karvanu Che")</span>
+          </h2>
+          <p class="text-xs text-gray-400 mt-1">
+            Pick your role. Konvo AI delivers your exact task instructions, acceptance criteria, and technical constraints so you never need to wait for a standup meeting.
+          </p>
+        </div>
+
+        <!-- Role Selector Buttons -->
+        <div class="flex items-center flex-wrap gap-2">
+          <button onclick="filterRole('all')" class="role-pill active px-3 py-1 rounded-lg text-xs font-medium bg-cyan-600 text-white">All Roles</button>
+          <button onclick="filterRole('Backend')" class="role-pill px-3 py-1 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300">Backend</button>
+          <button onclick="filterRole('Frontend')" class="role-pill px-3 py-1 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300">Frontend</button>
+          <button onclick="filterRole('DevOps')" class="role-pill px-3 py-1 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300">DevOps</button>
+          <button onclick="filterRole('QA')" class="role-pill px-3 py-1 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-gray-300">QA & Compliance</button>
+        </div>
+      </div>
+
+      <!-- Task Workstream Cards List -->
+      <div id="workstreams-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Rendered by app.js -->
+        <div class="text-center py-12 text-gray-500 col-span-full">Loading workstream tasks...</div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 5: REAL-TIME PROJECT TRACKER & KANBAN ("Project kya ponchyu") -->
+    <!-- ================================================================= -->
+    <section id="tab-tracker" class="tab-content hidden space-y-6">
+      
+      <!-- Top Tracker Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+        <div class="flex items-center space-x-3">
+          <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Project:</label>
+          <select id="tracker-project-select" onchange="loadTrackerData(this.value)" class="bg-gray-800 border border-gray-700 text-gray-200 text-xs sm:text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-cyan-500">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="openModal('modal-checkin')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-2 rounded-lg flex items-center space-x-1.5 transition">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Submit 10-Sec Async Standup</span>
+          </button>
+          <button onclick="triggerExecutiveBriefModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-2 rounded-lg flex items-center space-x-1.5 transition">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Generate 30-Sec Brief</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Meter & Velocity Summary -->
+      <div class="glass-panel p-5 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+        <div class="md:col-span-3">
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-xs font-semibold text-gray-300" id="tracker-project-title">Project Progress</span>
+            <span class="text-xs font-bold text-cyan-400" id="tracker-pct-label">65% Completed</span>
+          </div>
+          <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+            <div id="tracker-progress-bar" class="bg-gradient-to-r from-cyan-500 via-indigo-500 to-emerald-400 h-3 rounded-full transition-all duration-500" style="width: 65%;"></div>
+          </div>
+        </div>
+        <div class="bg-gray-900/80 p-3 rounded-lg border border-gray-800 text-center">
+          <p class="text-[11px] text-gray-400 uppercase font-semibold">Meetings Eliminated</p>
+          <p class="text-xl font-bold text-emerald-400" id="tracker-meetings-saved">38 Hours</p>
+        </div>
+      </div>
+
+      <!-- Real-Time Kanban Board -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Column 1: Backlog -->
+        <div class="bg-gray-900/60 rounded-xl border border-gray-800 p-3.5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between pb-2.5 border-b border-gray-800 mb-3">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+              <span>Backlog</span>
+            </span>
+            <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full font-bold" id="kanban-count-backlog">0</span>
+          </div>
+          <div id="kanban-col-backlog" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+        </div>
+
+        <!-- Column 2: In Progress -->
+        <div class="bg-gray-900/60 rounded-xl border border-gray-800 p-3.5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between pb-2.5 border-b border-gray-800 mb-3">
+            <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 pulse-dot"></span>
+              <span>In Progress</span>
+            </span>
+            <span class="text-xs bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded-full font-bold" id="kanban-count-inprogress">0</span>
+          </div>
+          <div id="kanban-col-inprogress" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+        </div>
+
+        <!-- Column 3: Review / QA -->
+        <div class="bg-gray-900/60 rounded-xl border border-gray-800 p-3.5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between pb-2.5 border-b border-gray-800 mb-3">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>Review / QA</span>
+            </span>
+            <span class="text-xs bg-amber-950 text-amber-400 px-2 py-0.5 rounded-full font-bold" id="kanban-count-review">0</span>
+          </div>
+          <div id="kanban-col-review" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+        </div>
+
+        <!-- Column 4: Completed -->
+        <div class="bg-gray-900/60 rounded-xl border border-gray-800 p-3.5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between pb-2.5 border-b border-gray-800 mb-3">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>Completed</span>
+            </span>
+            <span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-full font-bold" id="kanban-count-done">0</span>
+          </div>
+          <div id="kanban-col-done" class="space-y-3 overflow-y-auto flex-1 pr-1"></div>
+        </div>
+
+      </div>
+
+      <!-- Recent Async Standup Logs (Replacing Morning Meetings) -->
+      <div class="glass-panel p-5">
+        <h3 class="text-sm font-bold text-white flex items-center justify-between mb-4">
+          <span class="flex items-center space-x-2">
+            <i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i>
+            <span>Autonomous Standup Feed (Zero-Meeting Logs)</span>
+          </span>
+          <span class="text-xs text-gray-400 font-normal">Replaces 30-min daily standup syncs</span>
+        </h3>
+        <div id="tracker-standup-feed" class="space-y-3">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 6: KONVO AI INTERACTIVE CHANNEL -->
+    <!-- ================================================================= -->
+    <section id="tab-chat" class="tab-content hidden space-y-4">
+      
+      <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i data-lucide="messages-square" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Konvo AI Technical Architect & Standup Replacer</h3>
+            <p class="text-[11px] text-gray-400">Ask any questions regarding PRDs, architectural constraints, task requirements, or blockers.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <select id="chat-project-select" class="bg-gray-800 border border-gray-700 text-xs rounded-lg px-2.5 py-1 text-gray-300 focus:outline-none">
+            <!-- Filled dynamically -->
+          </select>
+          <select id="chat-role-select" class="bg-gray-800 border border-gray-700 text-xs rounded-lg px-2.5 py-1 text-gray-300 focus:outline-none">
+            <option value="Frontend Engineer">Frontend Engineer</option>
+            <option value="Backend Lead">Backend Lead</option>
+            <option value="DevOps / Cloud">DevOps / Cloud</option>
+            <option value="QA Specialist">QA Specialist</option>
+            <option value="Product Manager">Product Manager</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="chat-messages" class="glass-panel p-4 h-[480px] overflow-y-auto space-y-4">
+        <!-- Populated by app.js -->
+      </div>
+
+      <!-- Chat Input Form -->
+      <form id="chat-form" onsubmit="handleSendChat(event)" class="flex gap-2">
+        <input type="text" id="chat-input" placeholder="Ask Konvo AI: 'What should I build next?', 'Explain the evidence schema', or 'How to handle this blocker'..." class="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-4 py-2.5 text-xs sm:text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition">
+        <button type="submit" id="chat-submit-btn" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-medium text-xs sm:text-sm px-5 py-2.5 rounded-lg flex items-center space-x-1.5 shadow transition">
+          <span>Send</span>
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: NEW EMPLOYEE IDEA SUBMISSION ("Ideas upload kari sake") -->
+  <!-- ================================================================= -->
+  <div id="modal-idea-new" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-2xl bg-[#0e1424] border border-gray-700 p-6 rounded-2xl shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
+            <i data-lucide="lightbulb" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Upload New Project Idea</h3>
+            <p class="text-xs text-gray-400">Submit an organizational pain point or innovative solution for autonomous AI evaluation.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-idea-new')" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-idea" onsubmit="handleIdeaSubmit(event)" class="space-y-4 text-xs sm:text-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Your Name</label>
+            <input type="text" id="idea-author" required placeholder="e.g. Rahul Shah" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Your Role & Dept</label>
+            <input type="text" id="idea-role" required placeholder="e.g. Senior Frontend Dev, Web Team" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Idea / Initiative Title</label>
+          <input type="text" id="idea-title" required placeholder="e.g. Autonomous Customer Refund & Triage Co-Pilot" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">What is the Problem? (Meeting / Efficiency Drag)</label>
+          <textarea id="idea-problem" rows="3" required placeholder="Describe the friction or waste. (e.g. Developers lose 12 hours a week manually syncing billing tickets in meetings...)" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Proposed Solution & LLM Automation Approach</label>
+          <textarea id="idea-solution" rows="3" required placeholder="Describe how LLM automation or agent orchestration will solve it..." class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Target Department / Audience</label>
+            <input type="text" id="idea-audience" placeholder="e.g. Engineering, Support, Finance" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Expected Business Impact</label>
+            <input type="text" id="idea-impact" placeholder="e.g. Save 50 hrs/month, 80% faster resolution" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-3 border-t border-gray-800">
+          <button type="button" onclick="closeModal('modal-idea-new')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+          <button type="submit" id="btn-submit-idea" class="px-5 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-semibold flex items-center space-x-2 shadow transition">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Submit for AI Assessment</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: ASYNC 10-SEC STANDUP CHECK-IN (REPLACES MEETINGS) -->
+  <!-- ================================================================= -->
+  <div id="modal-checkin" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-lg bg-[#0e1424] border border-gray-700 p-6 rounded-2xl shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Autonomous Standup Check-in</h3>
+            <p class="text-xs text-gray-400">Takes 10 seconds. Eliminates 30 minutes of daily sync meetings.</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-checkin')" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-checkin" onsubmit="handleCheckinSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Your Name</label>
+            <input type="text" id="checkin-name" required placeholder="e.g. Priya Sharma" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Role</label>
+            <input type="text" id="checkin-role" required placeholder="e.g. Backend Lead" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Target Project</label>
+          <select id="checkin-project-id" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">What did you complete autonomously?</label>
+          <input type="text" id="checkin-completed" required placeholder="e.g. Finished IAM evidence scraper API" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">What are you working on next?</label>
+          <input type="text" id="checkin-focus" required placeholder="e.g. Setting up midnight GitHub Actions cron" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Any blockers? (or 'None')</label>
+          <input type="text" id="checkin-blockers" placeholder="e.g. None or waiting on AWS IAM role" value="None" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-3 border-t border-gray-800">
+          <button type="button" onclick="closeModal('modal-checkin')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition">
+            Submit Check-in
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: 30-SECOND EXECUTIVE STATUS BRIEF -->
+  <!-- ================================================================= -->
+  <div id="modal-brief" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-2xl bg-[#0e1424] border border-purple-800 p-6 rounded-2xl shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 rounded-lg bg-purple-500/20 text-purple-400">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">30-Second Executive Status Brief</h3>
+            <p class="text-xs text-gray-400">Real-time AI compilation for Leadership & C-Suite</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-brief')" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="brief-modal-content" class="markdown-body p-4 bg-gray-950/60 rounded-xl border border-gray-800 min-h-[160px]">
+        Loading AI synthesis...
+      </div>
+
+      <div class="flex justify-between items-center pt-2 border-t border-gray-800">
+        <span class="text-xs text-gray-500">Zero meetings required to compile this update.</span>
+        <button onclick="closeModal('modal-brief')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 text-xs font-semibold">
+          Close Brief
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: SETTINGS & GEMINI CONFIGURATION -->
+  <!-- ================================================================= -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel w-full max-w-md bg-[#0e1424] border border-gray-700 p-6 rounded-2xl shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 rounded-lg bg-gray-800 text-gray-300">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">AI Engine Settings</h3>
+            <p class="text-xs text-gray-400">Configure Google Gemini API or Built-in Engine</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-settings')" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-settings" onsubmit="handleSettingsSave(event)" class="space-y-4 text-xs sm:text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Company / Organization Name</label>
+          <input type="text" id="setting-company" placeholder="e.g. Nexis Enterprise" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Google Gemini API Key (Optional)</label>
+          <input type="password" id="setting-apikey" placeholder="AIzaSy... (leave blank to use built-in engine)" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+          <p class="text-[11px] text-gray-500 mt-1">If blank, Konvo uses its powerful built-in autonomous intelligence engine with zero external dependencies.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Model Selection</label>
+          <select id="setting-model" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500">
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Fastest Autonomous Orchestration)</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Architecture Reasoning)</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-3 border-t border-gray-800">
+          <button type="button" onclick="closeModal('modal-settings')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-gray-900 border border-cyan-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300">
+    <div id="toast-icon" class="text-cyan-400">
+      <i data-lucide="check-circle" class="w-5 h-5"></i>
+    </div>
+    <div id="toast-message" class="text-xs sm:text-sm font-medium">Notification message</div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT -->
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "konvo",
+  "version": "1.0.0",
+  "description": "Autonomous AI Enterprise Project Orchestrator & Meetingless Workspace",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "keywords": [
+    "llm",
+    "autonomous-agents",
+    "project-management",
+    "zero-meetings",
+    "prd-automation"
+  ],
+  "author": "KONVO Team",
+  "license": "MIT"
+}
